@@ -21,9 +21,6 @@ const handler = NextAuth({
         updateAge: 24 * 60 * 60, // 24 hours
     },
     useSecureCookies: process.env.NODE_ENV === "production",
-    pages: {
-        signIn: "/auth/signin",
-    },
     callbacks: {
         async redirect({ baseUrl }) {
             return baseUrl;
