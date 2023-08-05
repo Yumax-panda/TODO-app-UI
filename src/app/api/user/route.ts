@@ -5,7 +5,11 @@ const prisma = new PrismaClient();
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id") as string;
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json({ status: 400, message: "id is required" });
+  }
   const user = await prisma.user.findUnique({
     where: { id },
   });
@@ -14,7 +18,11 @@ export async function GET(request: Request) {
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id") as string;
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json({ status: 400, message: "id is required" });
+  }
   const user = await prisma.user.delete({
     where: { id },
   });
