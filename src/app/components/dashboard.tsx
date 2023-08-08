@@ -33,7 +33,7 @@ const Dashboard = () => {
   return (
     <div>
       <h1>Dashboard</h1>
-      <div>{JSON.stringify(tasks)}</div>
+      <div>{JSON.stringify(session)}</div>
       <ul>
         {tasks.map((task) => (
           <li key={task.id}>{task.title}</li>
