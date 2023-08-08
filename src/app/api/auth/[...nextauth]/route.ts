@@ -14,9 +14,22 @@ const handler = NextAuth({
   ],
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: "jwt",
+    strategy: "database",
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
   },
   useSecureCookies: process.env.NODE_ENV === "production",
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
+    },
+    async session({ session, user }) {
+      if (session?.user) {
+        session.user.id = user.id;
+      }
+      return session;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };
