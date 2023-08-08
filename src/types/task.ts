@@ -14,3 +14,16 @@ export interface UpdateTaskRequest {
   priority?: number;
   isDone?: boolean;
 }
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  createdAt?: string;
+  updatedAt: string;
+  deadline?: string;
+  completedAt?: string;
+  userId: string;
+  priority: number;
+  isDone: boolean;
+}
