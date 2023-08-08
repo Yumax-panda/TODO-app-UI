@@ -1,19 +1,10 @@
+import { faCoffee } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
-export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  createdAt?: string;
-  updatedAt: string;
-  deadline?: string;
-  completedAt?: string;
-  userId: string;
-  priority: number;
-  isDone: boolean;
-}
+import { Task } from "../../types/task";
 
 const Dashboard = () => {
   const { data: session } = useSession();
@@ -32,13 +23,28 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <div>{JSON.stringify(session)}</div>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>{task.title}</li>
-        ))}
-      </ul>
+      <table className='table-fixed'>
+        <thead>
+          <tr>
+            <th>完了済</th>
+            <th>タイトル</th>
+            <th>編集</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task) => {
+            return (
+              <tr id={task.id} key={task.id}>
+                <td>{task.isDone ? "完了" : "未完了"}</td>
+                <td>{task.title}</td>
+                <td>
+                  <FontAwesomeIcon icon={faCoffee} />
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
