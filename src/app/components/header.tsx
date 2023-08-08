@@ -20,7 +20,7 @@ const Header = () => {
             <Link href='/'>Home</Link>
           </li>
           <li>
-            <Link href='/dashboard'>Dashboard</Link>
+            <Link href='/content/dashboard'>Dashboard</Link>
           </li>
           <li>
             <_Header />
