@@ -19,7 +19,7 @@ export interface Task {
   id: string;
   title: string;
   description: string;
-  createdAt?: string;
+  createdAt: string;
   updatedAt: string;
   deadline?: string;
   completedAt?: string;
