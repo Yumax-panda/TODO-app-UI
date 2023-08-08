@@ -1,7 +1,10 @@
+"use client";
+
 import "./globals.css";
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { useEffect } from "react";
 
 import Header from "./components/header";
 import NextAuthProvider from "./providers/NextAuth";
@@ -14,12 +17,16 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    import("preline");
+  }, []);
+
   return (
     <html lang='ja'>
       <body className={inter.className}>
         <NextAuthProvider>
           <Header />
-          <main>{children}</main>
+          <main className='w-4/5'>{children}</main>
         </NextAuthProvider>
       </body>
     </html>
