@@ -12,7 +12,7 @@ export interface CreateModalProps extends _ModalBaseProps {
 }
 
 export interface EditModalProps extends _ModalBaseProps {
-  id: string;
+  task: Task;
 }
 
 export interface EditModalInput {
@@ -130,7 +130,7 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
   );
 };
 
-export const EditModal: React.FC<EditModalProps> = ({ id, onClose }) => {
+export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
   const router = useRouter();
   const [request, setRequest] = useState<EditModalInput>({
     title: null,
@@ -140,17 +140,18 @@ export const EditModal: React.FC<EditModalProps> = ({ id, onClose }) => {
   });
 
   async function editTask({ request }: { request: EditModalInput }): Promise<Task> {
-    const actual: any = { id };
+    const actual: any = { id: task.id };
     if (request.title) actual.title = request.title;
     if (request.description) actual.description = request.description;
     if (request.deadline) actual.deadline = request.deadline;
     if (request.priority) actual.priority = request.priority;
+    alert(JSON.stringify(actual));
     return await axios.post<Task>("/api/task/update", actual).then((res) => res.data);
   }
 
   return (
     <>
-      <div className='flex justify-between items-center py-3 px-4 border-b dark:border-grey-700'>
+      <div className='flex justify-between items-center my-4 px-4 border-b dark:border-grey-700'>
         <h3 className='font-bold text-grey-800 dark:text-grey-200'>タスクを編集</h3>
         <button
           type='button'
@@ -215,13 +216,14 @@ export const EditModal: React.FC<EditModalProps> = ({ id, onClose }) => {
             <span className='sr-only'>優先度</span>
           </label>
           <select
-            className='w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400'
+            className='py-3 px-4 pr-9 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400'
             placeholder='期限'
             onChange={(e) => {
               e.preventDefault();
               setRequest({ ...request, priority: parseInt(e.target.value) });
             }}
             required={false}
+            defaultValue={task.priority}
           >
             <option value={0}>低</option>
             <option value={1}>中</option>
