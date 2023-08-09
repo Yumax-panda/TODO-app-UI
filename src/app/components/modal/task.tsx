@@ -118,8 +118,8 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
             className='py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800 sm:p-4'
             onClick={async (e) => {
               e.preventDefault();
-              const newTask = await createTask({ request });
-              if (newTask) router.refresh();
+              await createTask({ request });
+              router.refresh();
             }}
           >
             追加
@@ -145,7 +145,6 @@ export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
     if (request.description) actual.description = request.description;
     if (request.deadline) actual.deadline = request.deadline;
     if (request.priority) actual.priority = request.priority;
-    alert(JSON.stringify(actual));
     return await axios.post<Task>("/api/task/update", actual).then((res) => res.data);
   }
 
@@ -237,8 +236,8 @@ export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
             className='py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800 sm:p-4'
             onClick={async (e) => {
               e.preventDefault();
-              const newTask = await editTask({ request });
-              if (newTask) router.refresh();
+              await editTask({ request });
+              router.refresh();
             }}
           >
             変更を保存
