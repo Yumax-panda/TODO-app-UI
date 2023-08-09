@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 export const useModal = () => {
-  const [isModalOpened, setOpen] = useState(false);
+  const [modalState, setOpen] = useState<null | string>(null);
 
-  const openModal = () => setOpen(true);
-  const closeModal = () => setOpen(false);
+  const openModal = (name: string) => setOpen(name);
+  const closeModal = () => setOpen(null);
 
-  return { isModalOpened, openModal, closeModal };
+  return { modalState, openModal, closeModal };
 };
 
 export interface _ModalBaseProps {
