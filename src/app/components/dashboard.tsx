@@ -103,7 +103,7 @@ const Dashboard = () => {
                       <th scope='col' className='px-6 py-3 text-left'>
                         <div className='flex items-center gap-x-2'>
                           <span className='text-xs font-semibold tracking-wide text-gray-800 dark:text-gray-200 min-w-max'>
-                            作成日
+                            最終更新日
                           </span>
                         </div>
                       </th>
@@ -141,7 +141,7 @@ const Dashboard = () => {
                           <td className='h-px w-px whitespace-nowrap'>
                             <div className='pl-6 py-3'>
                               <span className='text-sm text-grey-500'>
-                                {formatDate(task.createdAt)}
+                                {formatDate(task.updatedAt)}
                               </span>
                             </div>
                           </td>
