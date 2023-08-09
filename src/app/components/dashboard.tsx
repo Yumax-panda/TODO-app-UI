@@ -22,7 +22,7 @@ const Dashboard = () => {
   const { data: session } = useSession();
   const userId = session?.user?.id as string;
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [taskId, setTaskId] = useState<string>("");
+  const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const { modalState, openModal, closeModal } = useModal();
   const fetchTask = async (userId: string): Promise<Task[]> => {
     return await axios.get<Task[]>(`/api/task?userId=${userId}`).then((res) => res.data);
@@ -168,7 +168,7 @@ const Dashboard = () => {
                                 className='pr-4'
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  setTaskId(task.id);
+                                  setCurrentTask(task);
                                   openModal("edit");
                                 }}
                               >
@@ -224,9 +224,9 @@ const Dashboard = () => {
                   <ModalWrapper onClose={closeModal}>
                     <CreateModal userId={userId} onClose={closeModal} />
                   </ModalWrapper>
-                ) : modalState === "edit" ? (
+                ) : modalState === "edit" && currentTask !== null ? (
                   <ModalWrapper onClose={closeModal}>
-                    <EditModal id={taskId} onClose={closeModal} />
+                    <EditModal task={currentTask} onClose={closeModal} />
                   </ModalWrapper>
                 ) : null}
               </div>
