@@ -30,7 +30,16 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
   });
 
   async function createTask({ request }: { request: NewTaskRequest }) {
-    return await axios.post<Task>("/api/tasks/create", request).then((res) => res.data);
+    const actual: any = {
+      userId: userId,
+      title: request.title,
+      description: request.description,
+      priority: request.priority,
+    };
+    if (request.deadline) {
+      actual.deadline = request.deadline;
+    }
+    return await axios.post<Task>("/api/task/create", actual).then((res) => res.data);
   }
 
   return (
@@ -44,14 +53,7 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
           data-hs-overlay='#hs-bg-gray-on-hover-cards'
         >
           <span className='sr-only'>閉じる</span>
-          <FontAwesomeIcon
-            icon={faX}
-            className='w-3.5 h-3.5'
-            width='8'
-            height='8'
-            viewBox='0 0 8 8'
-            fill='none'
-          />
+          <FontAwesomeIcon icon={faX} />
         </button>
       </div>
 
@@ -96,31 +98,17 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
             placeholder='期限'
             onChange={(e) => {
               e.preventDefault();
-              setRequest({ ...request, deadline: e.target.value });
-            }}
-          />
-        </div>
-
-        <div className='mb-4'>
-          <label className='block text-sm font-medium dark:text-white'>
-            <span className='sr-only'>タイトル</span>
-          </label>
-          <input
-            type='text'
-            className='w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400'
-            placeholder='タイトル'
-            onChange={(e) => {
-              e.preventDefault();
-              setRequest({ ...request, title: e.target.value });
+              const datetime = new Date(e.target.value);
+              setRequest({ ...request, deadline: datetime.toISOString() });
             }}
           />
         </div>
 
         <div className='grid'>
           <button
-            type='submit'
+            type='button'
             className='py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800 sm:p-4'
-            onSubmit={(e) => {
+            onClick={(e) => {
               e.preventDefault();
               createTask({ request });
               onClose();
