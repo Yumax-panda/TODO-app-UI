@@ -15,14 +15,15 @@ import { useEffect, useState } from "react";
 
 import { Task } from "../../types/task";
 import { ModalWrapper, useModal } from "./modal/common";
-import { CreateModal } from "./modal/task";
+import { CreateModal, EditModal } from "./modal/task";
 
 const Dashboard = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user?.id as string;
   const [tasks, setTasks] = useState<Task[]>([]);
-  const { isModalOpened, openModal, closeModal } = useModal();
+  const [taskId, setTaskId] = useState<string>("");
+  const { modalState, openModal, closeModal } = useModal();
   const fetchTask = async (userId: string): Promise<Task[]> => {
     return await axios.get<Task[]>(`/api/task?userId=${userId}`).then((res) => res.data);
   };
@@ -68,7 +69,7 @@ const Dashboard = () => {
                       <div
                         className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800'
                         onClick={(e) => {
-                          openModal();
+                          openModal("create");
                         }}
                       >
                         <FontAwesomeIcon icon={faPlus} style={{ color: "white" }} />
@@ -163,7 +164,14 @@ const Dashboard = () => {
 
                           <td className='h-px w-px whitespace-nowrap'>
                             <div className='pl-6 py-3 text-lg'>
-                              <button className='pr-4'>
+                              <button
+                                className='pr-4'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setTaskId(task.id);
+                                  openModal("edit");
+                                }}
+                              >
                                 <FontAwesomeIcon icon={faPenToSquare} style={{ color: "blue" }} />
                               </button>
                               <button>
@@ -212,9 +220,13 @@ const Dashboard = () => {
                 </div>
                 {/* End Footer */}
 
-                {isModalOpened ? (
+                {modalState === "create" ? (
                   <ModalWrapper onClose={closeModal}>
                     <CreateModal userId={userId} onClose={closeModal} />
+                  </ModalWrapper>
+                ) : modalState === "edit" ? (
+                  <ModalWrapper onClose={closeModal}>
+                    <EditModal id={taskId} onClose={closeModal} />
                   </ModalWrapper>
                 ) : null}
               </div>
