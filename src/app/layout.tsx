@@ -24,10 +24,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='ja'>
       <body className={inter.className}>
-        <NextAuthProvider>
-          <Header />
-          <main className='w-4/5'>{children}</main>
-        </NextAuthProvider>
+        <div className='container max-w-screen-xl mx-auto'>
+          <NextAuthProvider>
+            <Header />
+            <main>{children}</main>
+          </NextAuthProvider>
+        </div>
       </body>
     </html>
   );
