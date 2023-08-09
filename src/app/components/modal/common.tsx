@@ -21,7 +21,7 @@ export const ModalWrapper: React.FC<ModalProps> = ({ onClose, children }) => {
   return (
     <div className='z-3 fixed top-0 left-0 h-full w-full bg-gray-300/50' onClick={onClose}>
       <div
-        className='h-6/7 w-6/7 md:w-4/7 absolute inset-0 my-auto mx-auto overflow-y-scroll bg-white px-12 pt-12 pb-4 shadow-lg'
+        className='md:w-4/7 absolute inset-0 my-auto mx-auto bg-white px-10 pt-10 pb-4 shadow-lg max-w-lg max-h-96 rounded-md'
         onClick={(e) => e.stopPropagation()}
       >
         {children}
