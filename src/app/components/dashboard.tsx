@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -17,6 +18,7 @@ import { ModalWrapper, useModal } from "./modal/common";
 import { CreateModal } from "./modal/task";
 
 const Dashboard = () => {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user?.id as string;
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -37,6 +39,12 @@ const Dashboard = () => {
       setTasks(newTasks);
     })();
   }, []);
+
+  const updateTask = async (data: any): Promise<Task> => {
+    return await axios.post<Task>("/api/task/update", data).then((response) => {
+      return response.data;
+    });
+  };
 
   return (
     <>
@@ -129,7 +137,14 @@ const Dashboard = () => {
                           </td>
 
                           <td className='h-px w-px whitespace-nowrap'>
-                            <div className='pl-6 py-3'>
+                            <div
+                              className='pl-6 py-3 hover:cursor-pointer'
+                              onClick={(e) => {
+                                e.preventDefault();
+                                updateTask({ id: task.id, isDone: !task.isDone });
+                                router.refresh();
+                              }}
+                            >
                               {task.isDone ? (
                                 <FontAwesomeIcon icon={faCheck} style={{ color: "green" }} />
                               ) : (
