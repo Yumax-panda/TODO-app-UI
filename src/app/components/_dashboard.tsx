@@ -13,11 +13,14 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import { Task } from "../../types/task";
+import { ModalWrapper, useModal } from "./modal/common";
+import { CreateModal } from "./modal/task";
 
 const Dashboard = () => {
   const { data: session } = useSession();
   const userId = session?.user?.id as string;
   const [tasks, setTasks] = useState<Task[]>([]);
+  const { isModalOpened, openModal, closeModal } = useModal();
   const fetchTask = async (userId: string): Promise<Task[]> => {
     return await axios.get<Task[]>(`/api/task?userId=${userId}`).then((res) => res.data);
   };
@@ -54,7 +57,12 @@ const Dashboard = () => {
 
                   <div>
                     <div className='inline-flex gap-x-2'>
-                      <div className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800'>
+                      <div
+                        className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800'
+                        onClick={(e) => {
+                          openModal();
+                        }}
+                      >
                         <FontAwesomeIcon icon={faPlus} style={{ color: "white" }} />
                         タスクを追加
                       </div>
@@ -68,7 +76,7 @@ const Dashboard = () => {
                 <table className='min-w-full divide-y divide-gray-200 dark:divide-gray-700'>
                   <thead className='bg-gray-50 dark:bg-gray-800'>
                     <tr>
-                      <th scope='col' className='pl-6 lg:pl-3 xl:pl-0 pr-6 py-3 text-left'>
+                      <th scope='col' className='pl-6 lg:pl-3 xl:pl-5 pr-6 py-3 text-left'>
                         <div className='flex items-center gap-x-2'>
                           <span className='text-xs font-semibold  text-gray-800 dark:text-gray-200 min-w-max'>
                             タイトル
@@ -181,13 +189,19 @@ const Dashboard = () => {
                         type='button'
                         className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800'
                       >
-                        <FontAwesomeIcon icon={faForward} style={{ color: "grey" }} />
                         Next
+                        <FontAwesomeIcon icon={faForward} style={{ color: "grey" }} />
                       </button>
                     </div>
                   </div>
                 </div>
                 {/* End Footer */}
+
+                {isModalOpened ? (
+                  <ModalWrapper onClose={closeModal}>
+                    <CreateModal userId={userId} onClose={closeModal} />
+                  </ModalWrapper>
+                ) : null}
               </div>
             </div>
           </div>
