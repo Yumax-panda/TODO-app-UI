@@ -47,6 +47,11 @@ const Dashboard = () => {
     });
   };
 
+  const refresh = async () => {
+    const newTasks = await fetchTask(userId);
+    setTasks(newTasks);
+  };
+
   return (
     <>
       {/* Table Section */}
@@ -228,15 +233,15 @@ const Dashboard = () => {
 
                 {modalState === "create" ? (
                   <ModalWrapper onClose={closeModal}>
-                    <CreateModal userId={userId} onClose={closeModal} />
+                    <CreateModal userId={userId} onClose={closeModal} refresh={refresh} />
                   </ModalWrapper>
                 ) : modalState === "edit" && currentTask !== null ? (
                   <ModalWrapper onClose={closeModal}>
-                    <EditModal task={currentTask} onClose={closeModal} />
+                    <EditModal task={currentTask} onClose={closeModal} refresh={refresh} />
                   </ModalWrapper>
                 ) : modalState === "delete" && currentTask !== null ? (
                   <ModalWrapper onClose={closeModal}>
-                    <DeleteModal task={currentTask} onClose={closeModal} />
+                    <DeleteModal task={currentTask} onClose={closeModal} refresh={refresh} />
                   </ModalWrapper>
                 ) : null}
               </div>
