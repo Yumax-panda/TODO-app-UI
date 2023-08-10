@@ -31,7 +31,7 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose, refre
     title: "",
     description: null,
     deadline: null,
-    priority: 0,
+    priority: 100,
   });
 
   async function createTask({ request }: { request: NewTaskRequest }) {
@@ -107,13 +107,36 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose, refre
           />
         </div>
 
+        <div className='mb-4'>
+          <label className='block text-sm font-medium dark:text-white'>
+            <span className='sr-only'>優先度</span>
+          </label>
+          <select
+            className='py-3 px-4 pr-9 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400'
+            placeholder='期限'
+            onChange={(e) => {
+              e.preventDefault();
+              const priority = e.target.value in ["0", "1", "2"] ? parseInt(e.target.value) : 100;
+              setRequest({ ...request, priority });
+            }}
+          >
+            <option value='100'>優先度</option>
+            <option value='0'>低</option>
+            <option value='1'>中</option>
+            <option value='2'>高</option>
+          </select>
+        </div>
+
         <div className='grid'>
           <button
             type='button'
             className='py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800 sm:p-4'
             onClick={async (e) => {
               e.preventDefault();
-              if (!request.title) return alert("タイトルを入力してください");
+              const missing: string[] = [];
+              if (!request.title) missing.push("タイトル");
+              if (request.priority === 100) missing.push("優先度");
+              if (missing.length > 0) return alert(`「${missing.join(", ")}」が入力されていません`);
               await createTask({ request });
               await refresh();
               onClose();
@@ -221,10 +244,10 @@ export const EditModal: React.FC<TaskRelatedModalProps> = ({ task, onClose, refr
             required={false}
             defaultValue={task.priority}
           >
-            <option value={undefined}>優先度</option>
-            <option value={0}>低</option>
-            <option value={1}>中</option>
-            <option value={2}>高</option>
+            <option value='100'>優先度</option>
+            <option value='0'>低</option>
+            <option value='1'>中</option>
+            <option value='2'>高</option>
           </select>
         </div>
 

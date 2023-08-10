@@ -39,6 +39,16 @@ const Dashboard = () => {
 
     return `${_date} ${_time}`;
   };
+  const priorityColor = (priority: number) => {
+    switch (priority) {
+      case 2: // high
+        return "text-red-600";
+      case 1: // middle
+        return "text-green-300";
+      default:
+        return "text-gray-500"; // none or unknown
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -158,7 +168,9 @@ const Dashboard = () => {
                         <tr key={task.id}>
                           <td className='h-px w-px whitespace-nowrap'>
                             <div className='pl-6 py-3'>
-                              <span className='text-sm text-grey-500'>{task.title}</span>
+                              <span className={`text-sm ${priorityColor(task.priority)}`}>
+                                {task.title}
+                              </span>
                             </div>
                           </td>
 
