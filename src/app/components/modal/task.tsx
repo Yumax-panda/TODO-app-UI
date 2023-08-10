@@ -280,10 +280,24 @@ export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) 
       {/* End Head */}
 
       {/* Buttons */}
-      <div className='grid grid-cols-4 gap-0 mt-4'>
+      <div className='grid grid-cols-4 gap-2 mt-4 mx-auto text-center'>
         <div className='col-span-1'></div>
-        <div className='col-span-1'>キャンセル</div>
-        <div className='col-span-1'>削除</div>
+        <div
+          className='col-span-1 cursor-pointer border-2 border-gray-200 rounded-md text-gray-500 text-base py-1'
+          onClick={onClose}
+        >
+          キャンセル
+        </div>
+        <div
+          className='col-span-1 bg-red-600 text-white rounded-md cursor-pointer border-2 border-gray-200 text-base py-1'
+          onClick={async (e) => {
+            e.preventDefault();
+            await deleteTask();
+            router.refresh();
+          }}
+        >
+          削除
+        </div>
         <div className='col-span-1'></div>
       </div>
       {/* End Buttons */}
