@@ -253,15 +253,18 @@ export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) 
 
   return (
     <div>
-      <div className='text-end'>
-        <FontAwesomeIcon icon={faX} className='cursor-pointer' onClick={onClose} />
-      </div>
       {/* Head */}
-      <div className='grid grid-rows-3 grid-flow-col gap-x-4 '>
-        <div className='row-span-1 col-span-3 text-center mb-2'>
-          <h2 className='font-bold text-gray-800 dark:text-gray-200 border-b pb-3'>
+      <div className='grid grid-rows-3 grid-flow-col gap-x-4 border-b'>
+        <div className='row-span-1 col-span-3 mb-2 flex justify-between items-center border-b pr-2'>
+          <h2 className='font-bold text-gray-800 dark:text-gray-200 pb-3 content-between flex'>
             「{task.title}」を削除
           </h2>
+          <FontAwesomeIcon
+            icon={faX}
+            className='inline-flex flex-shrink-0 justify-center items-center rounded-md text-gray-500 hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition-all text-sm dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800'
+            size='lg'
+            onClick={onClose}
+          />
         </div>
         <div className='row-span-2 col-span-1 content-center my-auto mr-auto ml-0'>
           <FontAwesomeIcon icon={faTriangleExclamation} size='2x' color='#F6AA00' />
@@ -275,6 +278,15 @@ export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) 
         </div>
       </div>
       {/* End Head */}
+
+      {/* Buttons */}
+      <div className='grid grid-cols-4 gap-0 mt-4'>
+        <div className='col-span-1'></div>
+        <div className='col-span-1'>キャンセル</div>
+        <div className='col-span-1'>削除</div>
+        <div className='col-span-1'></div>
+      </div>
+      {/* End Buttons */}
     </div>
   );
 };
