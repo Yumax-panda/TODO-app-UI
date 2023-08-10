@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { useEffect } from "react";
 
+import Footer from "./components/footer";
 import Header from "./components/header";
 import NextAuthProvider from "./providers/NextAuth";
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <NextAuthProvider>
             <Header />
             <main>{children}</main>
+            <Footer />
           </NextAuthProvider>
         </div>
       </body>
