@@ -122,7 +122,7 @@ const Dashboard = () => {
                   </thead>
 
                   <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                    {tasks.map((task) => {
+                    {tasks.reverse().map((task) => {
                       return (
                         <tr key={task.id}>
                           <td className='h-px w-px whitespace-nowrap'>
