@@ -186,7 +186,7 @@ const Dashboard = () => {
                               onClick={async (e) => {
                                 e.preventDefault();
                                 await updateTask({ id: task.id, isDone: !task.isDone });
-                                router.refresh();
+                                await refresh();
                               }}
                             >
                               {task.isDone ? (
