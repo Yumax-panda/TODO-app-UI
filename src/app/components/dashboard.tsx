@@ -10,7 +10,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -21,7 +20,6 @@ import { CreateModal, DeleteModal, EditModal } from "./modal/task";
 type SortBy = "deadline" | "priority" | "updatedAt" | "createdAt";
 
 const Dashboard = () => {
-  const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user?.id as string;
   const [tasks, setTasks] = useState<Task[]>([]);
