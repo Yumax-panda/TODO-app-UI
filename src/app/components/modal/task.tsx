@@ -253,14 +253,25 @@ export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) 
 
   return (
     <div>
+      <div className='text-end'>
+        <FontAwesomeIcon icon={faX} className='cursor-pointer' onClick={onClose} />
+      </div>
       {/* Head */}
-      <div className='grid grid-rows-2 grid-flow-col gap-x-4'>
-        <div className='row-span-2 col-span-1 content-center'>
-          <FontAwesomeIcon icon={faTriangleExclamation} />
+      <div className='grid grid-rows-3 grid-flow-col gap-x-4 '>
+        <div className='row-span-1 col-span-3 text-center mb-2'>
+          <h2 className='font-bold text-gray-800 dark:text-gray-200 border-b pb-3'>
+            「{task.title}」を削除
+          </h2>
+        </div>
+        <div className='row-span-2 col-span-1 content-center my-auto mr-auto ml-0'>
+          <FontAwesomeIcon icon={faTriangleExclamation} size='2x' color='#F6AA00' />
         </div>
         <div className='row-span-2 col-span-2'>
-          <p>一度削除したら元に戻せません。</p>
-          <p>本当に削除しますか？</p>
+          <p className='text-gray-500 pt-4'>
+            一度削除したら元に戻せません。
+            <br />
+            本当に削除しますか?
+          </p>
         </div>
       </div>
       {/* End Head */}
