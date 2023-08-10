@@ -18,6 +18,8 @@ import { Task } from "../../types/task";
 import { ModalWrapper, useModal } from "./modal/common";
 import { CreateModal, DeleteModal, EditModal } from "./modal/task";
 
+type SortBy = "deadline" | "priority" | "updatedAt";
+
 const Dashboard = () => {
   const router = useRouter();
   const { data: session } = useSession();
@@ -25,7 +27,8 @@ const Dashboard = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const { modalState, openModal, closeModal } = useModal();
-  const fetchTask = async (userId: string): Promise<Task[]> => {
+  const [sortBy, setSortBy] = useState<SortBy>("deadline");
+  const fetchTask = async (query: SortBy = sortBy): Promise<Task[]> => {
     return await axios.get<Task[]>(`/api/task?userId=${userId}`).then((res) => res.data);
   };
   const formatDate = (date: string) => {
@@ -37,7 +40,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     (async () => {
-      const newTasks = await fetchTask(userId);
+      const newTasks = await fetchTask();
       setTasks(newTasks);
     })();
   }, []);
@@ -49,7 +52,7 @@ const Dashboard = () => {
   };
 
   const refresh = async () => {
-    const newTasks = await fetchTask(userId);
+    const newTasks = await fetchTask();
     setTasks(newTasks);
   };
 
@@ -79,9 +82,9 @@ const Dashboard = () => {
                         id='sort'
                         className='py-3 px-4 pr-9 block w-full rounded-md text-sm dark:text-gray-400 outline-none'
                       >
-                        <option>期限</option>
-                        <option>優先度</option>
-                        <option>作成日</option>
+                        <option value='deadline'>期限</option>
+                        <option value='priority'>優先度</option>
+                        <option value='updatedAt'>更新日</option>
                       </select>
                     </div>
 
