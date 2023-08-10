@@ -266,7 +266,7 @@ export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) 
             onClick={onClose}
           />
         </div>
-        <div className='row-span-2 col-span-1 content-center my-auto mr-auto ml-0'>
+        <div className='row-span-2 col-span-1 content-center my-auto mx-auto'>
           <FontAwesomeIcon icon={faTriangleExclamation} size='2x' color='#F6AA00' />
         </div>
         <div className='row-span-2 col-span-2'>
