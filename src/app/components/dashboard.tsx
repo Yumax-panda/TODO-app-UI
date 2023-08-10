@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 
 import { Task } from "../../types/task";
 import { ModalWrapper, useModal } from "./modal/common";
-import { CreateModal, EditModal } from "./modal/task";
+import { CreateModal, DeleteModal, EditModal } from "./modal/task";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -174,7 +174,13 @@ const Dashboard = () => {
                               >
                                 <FontAwesomeIcon icon={faPenToSquare} style={{ color: "blue" }} />
                               </button>
-                              <button>
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setCurrentTask(task);
+                                  openModal("delete");
+                                }}
+                              >
                                 <FontAwesomeIcon icon={faTrash} style={{ color: "red" }} />
                               </button>
                             </div>
@@ -227,6 +233,10 @@ const Dashboard = () => {
                 ) : modalState === "edit" && currentTask !== null ? (
                   <ModalWrapper onClose={closeModal}>
                     <EditModal task={currentTask} onClose={closeModal} />
+                  </ModalWrapper>
+                ) : modalState === "delete" && currentTask !== null ? (
+                  <ModalWrapper onClose={closeModal}>
+                    <DeleteModal task={currentTask} onClose={closeModal} />
                   </ModalWrapper>
                 ) : null}
               </div>
