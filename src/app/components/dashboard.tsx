@@ -18,7 +18,7 @@ import { Task } from "../../types/task";
 import { ModalWrapper, useModal } from "./modal/common";
 import { CreateModal, DeleteModal, EditModal } from "./modal/task";
 
-type SortBy = "deadline" | "priority" | "updatedAt";
+type SortBy = "deadline" | "priority" | "updatedAt" | "createdAt";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -29,7 +29,9 @@ const Dashboard = () => {
   const { modalState, openModal, closeModal } = useModal();
   const [sortBy, setSortBy] = useState<SortBy>("deadline");
   const fetchTask = async (query: SortBy = sortBy): Promise<Task[]> => {
-    return await axios.get<Task[]>(`/api/task?userId=${userId}`).then((res) => res.data);
+    return await axios
+      .get<Task[]>(`/api/task?userId=${userId}&sortBy=${query}`)
+      .then((res) => res.data);
   };
   const formatDate = (date: string) => {
     const _date = date.slice(0, 10).replace(/-/g, "/");
@@ -51,8 +53,8 @@ const Dashboard = () => {
     });
   };
 
-  const refresh = async () => {
-    const newTasks = await fetchTask();
+  const refresh = async (query: SortBy = sortBy) => {
+    const newTasks = await fetchTask(query);
     setTasks(newTasks);
   };
 
@@ -81,10 +83,16 @@ const Dashboard = () => {
                       <select
                         id='sort'
                         className='py-3 px-4 pr-9 block w-full rounded-md text-sm dark:text-gray-400 outline-none'
+                        onChange={async (e) => {
+                          const query = e.target.value as SortBy;
+                          await refresh(query);
+                          setSortBy(query);
+                        }}
                       >
                         <option value='deadline'>期限</option>
                         <option value='priority'>優先度</option>
                         <option value='updatedAt'>更新日</option>
+                        <option value='createdAt'>作成日</option>
                       </select>
                     </div>
 
@@ -135,7 +143,7 @@ const Dashboard = () => {
                       <th scope='col' className='px-6 py-3 text-left'>
                         <div className='flex items-center gap-x-2'>
                           <span className='text-xs font-semibold tracking-wide text-gray-800 dark:text-gray-200 min-w-max'>
-                            最終更新日
+                            期限
                           </span>
                         </div>
                       </th>
@@ -180,7 +188,7 @@ const Dashboard = () => {
                           <td className='h-px w-px whitespace-nowrap'>
                             <div className='pl-6 py-3'>
                               <span className='text-sm text-grey-500'>
-                                {formatDate(task.updatedAt)}
+                                {task.deadline ? formatDate(task.deadline) : null}
                               </span>
                             </div>
                           </td>
