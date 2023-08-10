@@ -1,8 +1,8 @@
 export interface NewTaskRequest {
   userId: string;
   title: string;
-  description?: string;
-  deadline?: string;
+  description: string | null;
+  deadline: string | null;
   priority: number;
 }
 
