@@ -4,6 +4,7 @@ import {
   faForward,
   faPenToSquare,
   faPlus,
+  faShuffle,
   faTrash,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
@@ -69,7 +70,21 @@ const Dashboard = () => {
                     </h2>
                   </div>
 
-                  <div>
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div className='inline-flex gap-x-2 border-2 pr-2 pl-1 rounded-md'>
+                      <label htmlFor='sort' className='my-auto'>
+                        <FontAwesomeIcon icon={faShuffle} />
+                      </label>
+                      <select
+                        id='sort'
+                        className='py-3 px-4 pr-9 block w-full rounded-md text-sm dark:text-gray-400 outline-none'
+                      >
+                        <option>期限</option>
+                        <option>優先度</option>
+                        <option>作成日</option>
+                      </select>
+                    </div>
+
                     <div className='inline-flex gap-x-2'>
                       <div
                         className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800'
