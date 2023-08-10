@@ -26,8 +26,8 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
   const [request, setRequest] = useState<NewTaskRequest>({
     userId: userId,
     title: "",
-    description: "",
-    deadline: "",
+    description: null,
+    deadline: null,
     priority: 0,
   });
   const router = useRouter();
@@ -40,13 +40,6 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
       priority: request.priority,
     };
 
-    if (!request.title) {
-      alert("タイトルを入力してください");
-      return null;
-    }
-    if (request.deadline) {
-      actual.deadline = request.deadline;
-    }
     return await axios.post<Task>("/api/task/create", actual).then((res) => res.data);
   }
 
@@ -118,6 +111,7 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
             className='py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800 sm:p-4'
             onClick={async (e) => {
               e.preventDefault();
+              if (!request.title) return alert("タイトルを入力してください");
               await createTask({ request });
               router.refresh();
             }}
@@ -135,7 +129,7 @@ export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
   const [request, setRequest] = useState<EditModalInput>({
     title: task.title,
     description: task.description,
-    deadline: task.deadline,
+    deadline: null,
     priority: task.priority,
   });
 
