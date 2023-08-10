@@ -77,7 +77,7 @@ const Header = () => {
               href='/content/account'
               className='font-medium text-gray-500 hover:text-gray-400 sm:py-6 dark:text-gray-400 dark:hover:text-gray-500'
             >
-              Accounts
+              Profile
             </Link>
             <Link
               className='font-medium text-gray-500 hover:text-gray-400 sm:py-6 dark:text-gray-400 dark:hover:text-gray-500'
@@ -87,9 +87,9 @@ const Header = () => {
             </Link>
             <Link
               className='font-medium text-gray-500 hover:text-gray-400 sm:py-6 dark:text-gray-400 dark:hover:text-gray-500'
-              href='/help'
+              href='/about'
             >
-              Help
+              About
             </Link>
 
             <div
