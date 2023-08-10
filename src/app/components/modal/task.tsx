@@ -19,7 +19,7 @@ export interface EditModalInput {
   title: string | null;
   description: string | null;
   deadline: string | null;
-  priority: number | null;
+  priority: number;
 }
 
 export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => {
@@ -133,19 +133,16 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
 export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
   const router = useRouter();
   const [request, setRequest] = useState<EditModalInput>({
-    title: null,
-    description: null,
-    deadline: null,
-    priority: null,
+    title: task.title,
+    description: task.description,
+    deadline: task.deadline,
+    priority: task.priority,
   });
 
   async function editTask({ request }: { request: EditModalInput }): Promise<Task> {
-    const actual: any = { id: task.id };
-    if (request.title) actual.title = request.title;
-    if (request.description) actual.description = request.description;
-    if (request.deadline) actual.deadline = request.deadline;
-    if (request.priority) actual.priority = request.priority;
-    return await axios.post<Task>("/api/task/update", actual).then((res) => res.data);
+    return await axios
+      .post<Task>("/api/task/update", { id: task.id, ...request })
+      .then((res) => res.data);
   }
 
   return (
@@ -172,6 +169,7 @@ export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
             type='text'
             className='w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400'
             placeholder='タイトル'
+            defaultValue={task.title}
             onChange={(e) => {
               e.preventDefault();
               setRequest({ ...request, title: e.target.value });
@@ -187,6 +185,7 @@ export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
             type='text'
             className='w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400'
             placeholder='説明'
+            defaultValue={task.description}
             onChange={(e) => {
               e.preventDefault();
               setRequest({ ...request, description: e.target.value });
@@ -219,11 +218,14 @@ export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
             placeholder='期限'
             onChange={(e) => {
               e.preventDefault();
-              setRequest({ ...request, priority: parseInt(e.target.value) });
+              const priority =
+                e.target.value in ["0", "1", "2"] ? parseInt(e.target.value) : task.priority;
+              setRequest({ ...request, priority });
             }}
             required={false}
             defaultValue={task.priority}
           >
+            <option value={undefined}>優先度</option>
             <option value={0}>低</option>
             <option value={1}>中</option>
             <option value={2}>高</option>
@@ -236,6 +238,7 @@ export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
             className='py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800 sm:p-4'
             onClick={async (e) => {
               e.preventDefault();
+              if (!request.title) return alert("タイトルを入力してください。");
               await editTask({ request });
               router.refresh();
             }}
