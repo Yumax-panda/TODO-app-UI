@@ -122,7 +122,7 @@ const Dashboard = () => {
                   </thead>
 
                   <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                    {tasks.reverse().map((task) => {
+                    {tasks.map((task) => {
                       return (
                         <tr key={task.id}>
                           <td className='h-px w-px whitespace-nowrap'>
@@ -140,9 +140,9 @@ const Dashboard = () => {
                           <td className='h-px w-px whitespace-nowrap'>
                             <div
                               className='pl-6 py-3 hover:cursor-pointer'
-                              onClick={(e) => {
+                              onClick={async (e) => {
                                 e.preventDefault();
-                                updateTask({ id: task.id, isDone: !task.isDone });
+                                await updateTask({ id: task.id, isDone: !task.isDone });
                                 router.refresh();
                               }}
                             >
