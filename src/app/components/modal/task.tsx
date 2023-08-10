@@ -1,4 +1,4 @@
-import { faX } from "@fortawesome/free-solid-svg-icons";
+import { faTriangleExclamation, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ export interface CreateModalProps extends _ModalBaseProps {
   userId: string;
 }
 
-export interface EditModalProps extends _ModalBaseProps {
+export interface TaskRelatedModalProps extends _ModalBaseProps {
   task: Task;
 }
 
@@ -124,7 +124,7 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
   );
 };
 
-export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
+export const EditModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) => {
   const router = useRouter();
   const [request, setRequest] = useState<EditModalInput>({
     title: task.title,
@@ -242,5 +242,28 @@ export const EditModal: React.FC<EditModalProps> = ({ task, onClose }) => {
         </div>
       </form>
     </>
+  );
+};
+
+export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) => {
+  async function deleteTask(): Promise<Task> {
+    return await axios.post<Task>("/api/task/delete", { id: task.id }).then((res) => res.data);
+  }
+  const router = useRouter();
+
+  return (
+    <div>
+      {/* Head */}
+      <div className='grid grid-rows-2 grid-flow-col gap-x-4'>
+        <div className='row-span-2 col-span-1 content-center'>
+          <FontAwesomeIcon icon={faTriangleExclamation} />
+        </div>
+        <div className='row-span-2 col-span-2'>
+          <p>一度削除したら元に戻せません。</p>
+          <p>本当に削除しますか？</p>
+        </div>
+      </div>
+      {/* End Head */}
+    </div>
   );
 };
