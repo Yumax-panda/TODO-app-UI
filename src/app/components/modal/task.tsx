@@ -1,17 +1,20 @@
 import { faTriangleExclamation, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import { NewTaskRequest, Task } from "../../../types/task";
 import { _ModalBaseProps } from "./common";
 
-export interface CreateModalProps extends _ModalBaseProps {
+interface RefreshRequiredModalProps extends _ModalBaseProps {
+  refresh: () => Promise<void>;
+}
+
+export interface CreateModalProps extends RefreshRequiredModalProps {
   userId: string;
 }
 
-export interface TaskRelatedModalProps extends _ModalBaseProps {
+export interface TaskRelatedModalProps extends RefreshRequiredModalProps {
   task: Task;
 }
 
@@ -22,7 +25,7 @@ export interface EditModalInput {
   priority: number;
 }
 
-export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => {
+export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose, refresh }) => {
   const [request, setRequest] = useState<NewTaskRequest>({
     userId: userId,
     title: "",
@@ -30,7 +33,6 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
     deadline: null,
     priority: 0,
   });
-  const router = useRouter();
 
   async function createTask({ request }: { request: NewTaskRequest }) {
     const actual: any = {
@@ -113,7 +115,8 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
               e.preventDefault();
               if (!request.title) return alert("タイトルを入力してください");
               await createTask({ request });
-              router.refresh();
+              await refresh();
+              onClose();
             }}
           >
             追加
@@ -124,8 +127,7 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose }) => 
   );
 };
 
-export const EditModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) => {
-  const router = useRouter();
+export const EditModal: React.FC<TaskRelatedModalProps> = ({ task, onClose, refresh }) => {
   const [request, setRequest] = useState<EditModalInput>({
     title: task.title,
     description: task.description,
@@ -234,7 +236,8 @@ export const EditModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) =>
               e.preventDefault();
               if (!request.title) return alert("タイトルを入力してください。");
               await editTask({ request });
-              router.refresh();
+              await refresh();
+              onClose();
             }}
           >
             変更を保存
@@ -245,11 +248,10 @@ export const EditModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) =>
   );
 };
 
-export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) => {
+export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose, refresh }) => {
   async function deleteTask(): Promise<Task> {
     return await axios.post<Task>("/api/task/delete", { id: task.id }).then((res) => res.data);
   }
-  const router = useRouter();
 
   return (
     <div>
@@ -293,7 +295,8 @@ export const DeleteModal: React.FC<TaskRelatedModalProps> = ({ task, onClose }) 
           onClick={async (e) => {
             e.preventDefault();
             await deleteTask();
-            router.refresh();
+            await refresh();
+            onClose();
           }}
         >
           削除
