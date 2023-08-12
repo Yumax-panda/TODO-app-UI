@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   const _sortBy = searchParams.get("sortBy") as SortBy | null;
   const sortBy = _sortBy || "deadline";
   const skip = searchParams.get("skip");
-  const page = searchParams.get("page");
+  const pageSize = searchParams.get("pageSize");
 
   if (!id) {
     const data = await prisma.task.findMany();
@@ -22,8 +22,8 @@ export async function GET(request: Request) {
     orderBy: { [sortBy]: "desc" },
   });
 
-  if (!(skip && page)) return NextResponse.json({ data, total: data.length });
+  if (!(skip && pageSize)) return NextResponse.json({ data, total: data.length });
   const start = parseInt(skip);
-  const end = start + parseInt(page);
+  const end = start + parseInt(pageSize);
   return NextResponse.json({ data: data.slice(start, end), total: data.length });
 }
