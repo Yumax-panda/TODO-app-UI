@@ -19,6 +19,10 @@ import { ModalWrapper, useModal } from "./modal/common";
 import { CreateModal, DeleteModal, EditModal } from "./modal/task";
 
 type SortBy = "deadline" | "priority" | "updatedAt" | "createdAt";
+interface TaskPayload {
+  data: Task[];
+  total: number;
+}
 
 const Dashboard = () => {
   const { data: session } = useSession();
@@ -27,9 +31,9 @@ const Dashboard = () => {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const { modalState, openModal, closeModal } = useModal();
   const [sortBy, setSortBy] = useState<SortBy>("deadline");
-  const fetchTask = async (query: SortBy = sortBy): Promise<Task[]> => {
+  const fetchTask = async (query: SortBy = sortBy): Promise<TaskPayload> => {
     return await axios
-      .get<Task[]>(`/api/task?userId=${userId}&sortBy=${query}`)
+      .get<TaskPayload>(`/api/task?userId=${userId}&sortBy=${query}`)
       .then((res) => res.data);
   };
   const formatDate = (date: string) => {
@@ -45,8 +49,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     (async () => {
-      const newTasks = await fetchTask();
-      setTasks(newTasks);
+      const { total, data } = await fetchTask();
+      setTasks(data);
     })();
   }, []);
 
@@ -57,8 +61,8 @@ const Dashboard = () => {
   };
 
   const refresh = async (query: SortBy = sortBy) => {
-    const newTasks = await fetchTask(query);
-    setTasks(newTasks);
+    const { data, total } = await fetchTask(query);
+    setTasks(data);
   };
 
   return (
