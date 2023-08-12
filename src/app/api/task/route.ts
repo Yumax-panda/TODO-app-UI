@@ -9,6 +9,8 @@ export async function GET(request: Request) {
   const id = searchParams.get("userId");
   const _sortBy = searchParams.get("sortBy") as SortBy | null;
   const sortBy = _sortBy || "deadline";
+  const skip = searchParams.get("skip");
+  const page = searchParams.get("page");
 
   if (!id) {
     const data = await prisma.task.findMany();
@@ -19,5 +21,9 @@ export async function GET(request: Request) {
     where: { userId: id },
     orderBy: { [sortBy]: "desc" },
   });
-  return NextResponse.json(data);
+
+  if (!(skip && page)) return NextResponse.json({ data, total: data.length });
+  const start = parseInt(skip);
+  const end = start + parseInt(page);
+  return NextResponse.json({ data: data.slice(start, end), total: data.length });
 }
