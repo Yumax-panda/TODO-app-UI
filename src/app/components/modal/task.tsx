@@ -7,7 +7,11 @@ import { NewTaskRequest, Task } from "../../../types/task";
 import { _ModalBaseProps } from "./common";
 
 interface RefreshRequiredModalProps extends _ModalBaseProps {
-  refresh: () => Promise<void>;
+  refresh: (
+    sortBy?: "priority" | "deadline" | "createdAt" | "updatedAt",
+    page?: number,
+    pageSize?: number,
+  ) => Promise<void>;
 }
 
 export interface CreateModalProps extends RefreshRequiredModalProps {

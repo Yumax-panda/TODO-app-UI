@@ -23,21 +23,32 @@ interface TaskPayload {
   data: Task[];
   total: number;
 }
+interface Params {
+  sortBy: SortBy;
+  pageSize: number;
+  page: number;
+}
 
 const Dashboard = () => {
   const { data: session } = useSession();
   const userId = session?.user?.id as string;
   const [payload, setPayload] = useState<TaskPayload>({ data: [], total: 0 });
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
+  const [params, setParams] = useState<Params>({
+    sortBy: "deadline",
+    pageSize: 5,
+    page: 1,
+  });
   const { modalState, openModal, closeModal } = useModal();
-  const [sortBy, setSortBy] = useState<SortBy>("deadline");
-  const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(5);
-  const fetchTask = async (query: SortBy = sortBy): Promise<TaskPayload> => {
-    const skip = 5 * (page - 1);
+  const fetchTask = async (
+    sortBy: SortBy = params.sortBy,
+    page: number = params.page,
+    pageSize: number = params.pageSize,
+  ): Promise<TaskPayload> => {
+    const skip = (page - 1) * pageSize;
     return await axios
       .get<TaskPayload>(
-        `/api/task?userId=${userId}&sortBy=${query}&skip=${skip}&pageSize=${pageSize}`,
+        `/api/task?userId=${userId}&sortBy=${sortBy}&skip=${skip}&pageSize=${pageSize}`,
       )
       .then((res) => res.data);
   };
@@ -65,8 +76,12 @@ const Dashboard = () => {
     });
   };
 
-  const refresh = async (query: SortBy = sortBy) => {
-    const payload = await fetchTask(query);
+  const refresh = async (
+    sortBy: SortBy = params.sortBy,
+    page: number = params.page,
+    pageSize: number = params.pageSize,
+  ): Promise<void> => {
+    const payload = await fetchTask(sortBy, page, pageSize);
     setPayload(payload);
   };
 
@@ -98,7 +113,7 @@ const Dashboard = () => {
                         onChange={async (e) => {
                           const query = e.target.value as SortBy;
                           await refresh(query);
-                          setSortBy(query);
+                          setParams({ ...params, sortBy: query });
                         }}
                       >
                         <option value='deadline'>期限</option>
@@ -247,7 +262,7 @@ const Dashboard = () => {
                   <div>
                     <p className='text-sm text-gray-600 dark:text-gray-400'>
                       <span className='font-semibold text-gray-800 dark:text-gray-200'>
-                        {`${5 * (page - 1) + 1}-${Math.min(5 * page, payload.total)}`}
+                        {`${5 * (params.page - 1) + 1}-${Math.min(5 * params.page, payload.total)}`}
                       </span>{" "}
                       /{payload.total}件
                     </p>
@@ -257,8 +272,13 @@ const Dashboard = () => {
                     <div className='inline-flex gap-x-2'>
                       <button
                         type='button'
-                        disabled={page === 1}
                         className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800'
+                        disabled={params.page === 1}
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          await refresh(params.sortBy, params.page - 1, params.pageSize);
+                          setParams({ ...params, page: params.page - 1 });
+                        }}
                       >
                         <FontAwesomeIcon icon={faBackward} style={{ color: "grey" }} />
                         Prev
@@ -266,8 +286,13 @@ const Dashboard = () => {
 
                       <button
                         type='button'
-                        disabled={5 * page >= payload.total}
                         className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800'
+                        disabled={params.page === Math.ceil(payload.total / params.pageSize)}
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          await refresh(params.sortBy, params.page + 1, params.pageSize);
+                          setParams({ ...params, page: params.page + 1 });
+                        }}
                       >
                         Next
                         <FontAwesomeIcon icon={faForward} style={{ color: "grey" }} />
