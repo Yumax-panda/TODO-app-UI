@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -32,10 +33,14 @@ const Dashboard = () => {
       .then((res) => res.data);
   };
   const formatDate = (date: string) => {
-    const _date = date.slice(0, 10).replace(/-/g, "/");
-    const _time = date.slice(11, 16);
-
-    return `${_date} ${_time}`;
+    return dayjs(date).format("YYYY/MM/DD");
+  };
+  const isNearDeadline = (date: string | null) => {
+    if (date === null) return false;
+    const now = dayjs();
+    const deadline = dayjs(date);
+    const diff = deadline.diff(now, "day");
+    return diff <= 2;
   };
 
   useEffect(() => {
@@ -185,7 +190,13 @@ const Dashboard = () => {
 
                           <td className='h-px w-px whitespace-nowrap'>
                             <div className='pl-6 py-3'>
-                              <span className='text-sm text-grey-500'>
+                              <span
+                                className={
+                                  isNearDeadline(task.deadline)
+                                    ? "text-sm text-red-500"
+                                    : "text-sm text-gray-500"
+                                }
+                              >
                                 {task.deadline ? formatDate(task.deadline) : null}
                               </span>
                             </div>

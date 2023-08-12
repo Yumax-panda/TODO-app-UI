@@ -96,7 +96,7 @@ export const CreateModal: React.FC<CreateModalProps> = ({ userId, onClose, refre
             <span className='sr-only'>期限</span>
           </label>
           <input
-            type='datetime-local'
+            type='date'
             className='w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400'
             placeholder='期限'
             onChange={(e) => {
@@ -217,7 +217,7 @@ export const EditModal: React.FC<TaskRelatedModalProps> = ({ task, onClose, refr
             <span className='sr-only'>期限</span>
           </label>
           <input
-            type='datetime-local'
+            type='date'
             className='w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400'
             placeholder='期限'
             onChange={(e) => {
