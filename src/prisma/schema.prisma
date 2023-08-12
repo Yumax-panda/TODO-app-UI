@@ -46,7 +46,6 @@ model User {
     accounts      Account[]
     sessions      Session[]
     tasks         Task[]
-    tags          Tag[]
 }
 
 model VerificationRequest {
@@ -69,17 +68,4 @@ model Task {
     user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     isDone      Boolean  @default(false)
     priority    Int      @default(0)
-    tagId       String?
-    tag         Tag?     @relation(fields: [tagId], references: [id])
-}
-
-model Tag {
-    id          String   @id @default(cuid())
-    name        String
-    description String?
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    userId      String
-    user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    tasks       Task[]
 }
