@@ -27,7 +27,7 @@ interface TaskPayload {
 const Dashboard = () => {
   const { data: session } = useSession();
   const userId = session?.user?.id as string;
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [payload, setPayload] = useState<TaskPayload>({ data: [], total: 0 });
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const { modalState, openModal, closeModal } = useModal();
   const [sortBy, setSortBy] = useState<SortBy>("deadline");
@@ -49,8 +49,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     (async () => {
-      const { total, data } = await fetchTask();
-      setTasks(data);
+      const payload = await fetchTask();
+      setPayload(payload);
     })();
   }, []);
 
@@ -61,8 +61,8 @@ const Dashboard = () => {
   };
 
   const refresh = async (query: SortBy = sortBy) => {
-    const { data, total } = await fetchTask(query);
-    setTasks(data);
+    const payload = await fetchTask(query);
+    setPayload(payload);
   };
 
   return (
@@ -160,7 +160,7 @@ const Dashboard = () => {
                   </thead>
 
                   <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                    {tasks.map((task) => {
+                    {payload.data.map((task) => {
                       return (
                         <tr key={task.id}>
                           <td className='h-px w-px whitespace-nowrap'>
@@ -242,7 +242,7 @@ const Dashboard = () => {
                   <div>
                     <p className='text-sm text-gray-600 dark:text-gray-400'>
                       <span className='font-semibold text-gray-800 dark:text-gray-200'>
-                        {tasks.length}
+                        {payload.data.length}/{payload.total}
                       </span>{" "}
                       件
                     </p>
