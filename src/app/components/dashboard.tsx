@@ -31,9 +31,14 @@ const Dashboard = () => {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const { modalState, openModal, closeModal } = useModal();
   const [sortBy, setSortBy] = useState<SortBy>("deadline");
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
   const fetchTask = async (query: SortBy = sortBy): Promise<TaskPayload> => {
+    const skip = 5 * (page - 1);
     return await axios
-      .get<TaskPayload>(`/api/task?userId=${userId}&sortBy=${query}`)
+      .get<TaskPayload>(
+        `/api/task?userId=${userId}&sortBy=${query}&skip=${skip}&pageSize=${pageSize}`,
+      )
       .then((res) => res.data);
   };
   const formatDate = (date: string) => {
@@ -242,9 +247,9 @@ const Dashboard = () => {
                   <div>
                     <p className='text-sm text-gray-600 dark:text-gray-400'>
                       <span className='font-semibold text-gray-800 dark:text-gray-200'>
-                        {payload.data.length}/{payload.total}
+                        {`${5 * (page - 1) + 1}-${Math.min(5 * page, payload.total)}`}
                       </span>{" "}
-                      件
+                      /{payload.total}件
                     </p>
                   </div>
 
@@ -252,6 +257,7 @@ const Dashboard = () => {
                     <div className='inline-flex gap-x-2'>
                       <button
                         type='button'
+                        disabled={page === 1}
                         className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800'
                       >
                         <FontAwesomeIcon icon={faBackward} style={{ color: "grey" }} />
@@ -260,6 +266,7 @@ const Dashboard = () => {
 
                       <button
                         type='button'
+                        disabled={5 * page >= payload.total}
                         className='py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800'
                       >
                         Next
