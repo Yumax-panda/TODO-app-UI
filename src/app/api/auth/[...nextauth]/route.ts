@@ -20,7 +20,7 @@ const handler = NextAuth({
   useSecureCookies: process.env.NODE_ENV === "production",
   callbacks: {
     async redirect({ url, baseUrl }) {
-      return baseUrl;
+      return url;
     },
     async session({ session, user }) {
       if (session?.user) {
