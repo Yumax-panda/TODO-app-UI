@@ -36,7 +36,7 @@ const Dashboard = () => {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [params, setParams] = useState<Params>({
     sortBy: "deadline",
-    pageSize: 5,
+    pageSize: 10,
     page: 1,
   });
   const { modalState, openModal, closeModal } = useModal();
@@ -262,7 +262,10 @@ const Dashboard = () => {
                   <div>
                     <p className='text-sm text-gray-600 dark:text-gray-400'>
                       <span className='font-semibold text-gray-800 dark:text-gray-200'>
-                        {`${5 * (params.page - 1) + 1}-${Math.min(5 * params.page, payload.total)}`}
+                        {`${params.pageSize * (params.page - 1) + 1}-${Math.min(
+                          params.pageSize * params.page,
+                          payload.total,
+                        )}`}
                       </span>{" "}
                       /{payload.total}件
                     </p>
