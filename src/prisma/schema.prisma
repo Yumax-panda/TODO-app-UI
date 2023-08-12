@@ -69,6 +69,8 @@ model Task {
     user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     isDone      Boolean  @default(false)
     priority    Int      @default(0)
+    tagId       String?
+    tag         Tag?     @relation(fields: [tagId], references: [id])
 }
 
 model Tag {
@@ -77,7 +79,7 @@ model Tag {
     description String?
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
-    color       String
     userId      String
     user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    tasks       Task[]
 }
