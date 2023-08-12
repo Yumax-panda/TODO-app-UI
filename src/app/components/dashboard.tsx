@@ -17,8 +17,8 @@ import { useEffect, useState } from "react";
 import { Task } from "../../types/task";
 import { ModalWrapper, useModal } from "./modal/common";
 import { CreateModal, DeleteModal, EditModal } from "./modal/task";
+import { SortBy } from "@/types/constants";
 
-type SortBy = "deadline" | "priority" | "updatedAt" | "createdAt";
 interface TaskPayload {
   data: Task[];
   total: number;
