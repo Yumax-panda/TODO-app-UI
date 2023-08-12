@@ -26,4 +26,5 @@ export interface Task {
   userId: string;
   priority: number;
   isDone: boolean;
+  tagId: string | null;
 }
